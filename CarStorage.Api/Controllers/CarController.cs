@@ -31,7 +31,12 @@ namespace CarStorage.Api.Controllers
         {
             var response = await Mediator.Send(new GetCarQuery { Id = id });
 
-            var result = mapper.Map<ActionResult<ApiCarModel>>(response);
+            if (!response.Succeeded)
+            {
+                return NotFound(response.Errors);
+            }
+
+            var result = mapper.Map<ApiCarModel>(response);
 
             return Ok(result);
         }
@@ -64,7 +69,7 @@ namespace CarStorage.Api.Controllers
 
             if (!response.Succeeded)
             {
-                return BadRequest();
+                return BadRequest(response.Errors);
             }
 
             return Ok(response);
@@ -88,7 +93,7 @@ namespace CarStorage.Api.Controllers
 
             if (!response.Succeeded)
             {
-                return BadRequest();
+                return BadRequest(response.Errors);
             }
 
             return Ok(response);
@@ -108,7 +113,7 @@ namespace CarStorage.Api.Controllers
 
             if (!response.Succeeded)
             {
-                return BadRequest();
+                return BadRequest(response.Errors);
             }
 
             return NoContent();
