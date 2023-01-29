@@ -23,13 +23,13 @@ namespace CarStorage.Api.Controllers
             Description = "Get manufacturers",
             OperationId = "GetAllAsync")]
         [SwaggerResponse(statusCode: (int)HttpStatusCode.OK, type: typeof(List<ApiManufacturerModel>))]
-        public async Task<ActionResult<List<ApiManufacturerModel>>> GetAllAsync()
+        public async Task<IActionResult> GetAllAsync()
         {
-            var response = await Send(new GetManufacturerQuery());
+            var response = await Mediator.Send(new GetManufacturerQuery());
 
             var result = mapper.Map<List<ApiManufacturerModel>>(response);
 
-            return result;
+            return Ok(result);
         }
     }
 }

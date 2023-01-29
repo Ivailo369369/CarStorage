@@ -8,6 +8,11 @@ namespace CarStorage.Infrastructure.Data
 {
     public class CarStorageDbContext : DbContext, ICarStorageDbContext
     {
+        public CarStorageDbContext(DbContextOptions<CarStorageDbContext> options)
+            :base(options)
+        {
+        }
+
         public DbSet<Car> Cars { get; set; }
 
         public DbSet<Category> Categories { get; set; }

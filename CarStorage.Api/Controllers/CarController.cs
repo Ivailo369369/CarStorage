@@ -1,7 +1,6 @@
 ﻿using System.Net;
 
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Http;
 
 using CarStorage.Api.Models.Cars;
 using CarStorage.Core.Application.Cars.Queries.GetCar;
@@ -28,13 +27,13 @@ namespace CarStorage.Api.Controllers
             Description = "Get a car by id",
             OperationId = "GetAsync")]
         [SwaggerResponse(statusCode: (int) HttpStatusCode.OK, type: typeof(ApiCarModel))]
-        public async Task<ActionResult<ApiCarModel>> GetAsync([FromRoute] int id)
+        public async Task<IActionResult> GetAsync([FromRoute] int id)
         {
-            var response = await Send(new GetCarQuery { Id = id });
+            var response = await Mediator.Send(new GetCarQuery { Id = id });
 
             var result = mapper.Map<ActionResult<ApiCarModel>>(response);
 
-            return result;
+            return Ok(result);
         }
 
         [HttpGet]
@@ -43,13 +42,13 @@ namespace CarStorage.Api.Controllers
             Description = "Get cars with a filtering option",
             OperationId = "GetAllAsync")]
         [SwaggerResponse(statusCode: (int)HttpStatusCode.OK, type: typeof(List<ApiCarModel>))]
-        public async Task<ActionResult<List<ApiCarModel>>> GetAllAsync([FromQuery] GetCarsQuery query)
+        public async Task<IActionResult> GetAllAsync([FromQuery] GetCarsQuery query)
         {
-            var response = await Send(query);
+            var response = await Mediator.Send(query);
 
-            var result = mapper.Map<ActionResult<List<ApiCarModel>>>(response);
+            var result = mapper.Map<List<ApiCarModel>>(response);
 
-            return result;
+            return Ok(result);
         }
 
         [HttpPost]
@@ -60,14 +59,23 @@ namespace CarStorage.Api.Controllers
         [SwaggerResponse(statusCode: (int)HttpStatusCode.Created)]
         [SwaggerResponse(statusCode: (int)HttpStatusCode.BadRequest)]
         public async Task<ActionResult> CreateAsync([FromBody] CreateCarCommand command)
-            => await Send(command);
+        {
+            var response = await Mediator.Send(command);
+
+            if (!response.Succeeded)
+            {
+                return BadRequest();
+            }
+
+            return Ok(response);
+        }
 
         [HttpPut]
         [SwaggerOperation(
             Summary = "Update a car",
             Description = "Update a car",
             OperationId = "UpdateAsync")]
-        [SwaggerResponse(statusCode: (int)HttpStatusCode.Created)]
+        [SwaggerResponse(statusCode: (int)HttpStatusCode.OK)]
         [SwaggerResponse(statusCode: (int)HttpStatusCode.NotFound)]
         [SwaggerResponse(statusCode: (int)HttpStatusCode.BadRequest)]
         public async Task<ActionResult> UpdateAsync(
@@ -76,9 +84,14 @@ namespace CarStorage.Api.Controllers
         {
             command.Id = id;
 
-            var response = await Send(command);
+            var response = await Mediator.Send(command);
 
-            return response;
+            if (!response.Succeeded)
+            {
+                return BadRequest();
+            }
+
+            return Ok(response);
         }
 
         [HttpDelete]
@@ -86,10 +99,19 @@ namespace CarStorage.Api.Controllers
             Summary = "Delete a car",
             Description = "Delete car",
             OperationId = "DeleteAsync")]
-        [SwaggerResponse(statusCode: (int)HttpStatusCode.OK)]
+        [SwaggerResponse(statusCode: (int)HttpStatusCode.NoContent)]
         [SwaggerResponse(statusCode: (int)HttpStatusCode.NotFound)]
         [SwaggerResponse(statusCode: (int)HttpStatusCode.BadRequest)]
         public async Task<ActionResult> DeleteAsync([FromRoute] int id)
-            => await Send(new DeleteCarCommand() { Id = id });
+        {
+            var response = await Mediator.Send(new DeleteCarCommand() { Id = id });
+
+            if (!response.Succeeded)
+            {
+                return BadRequest();
+            }
+
+            return NoContent();
+        }
     }
 }

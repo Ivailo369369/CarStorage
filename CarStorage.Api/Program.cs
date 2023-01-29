@@ -4,6 +4,11 @@ using CarStorage.Core.Application;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(s =>
+{
+    s.EnableAnnotations();
+});
 builder.Services.AddControllers()
     .AddNewtonsoftJson();
 builder.Services.AddEndpointsApiExplorer();
