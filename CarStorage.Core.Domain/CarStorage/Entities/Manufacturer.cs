@@ -12,11 +12,11 @@ namespace CarStorage.Core.Domain.CarStorage.Entities
             Name = name;
         }
 
-        public int Id { get; set; }
+        public int Id { get; private set; }
 
-        public string Name { get; set; }
+        public string Name { get; private set; }
 
-        public ICollection<Car> Cars { get; set; }
+        public ICollection<Car> Cars { get; private set; }
 
         public static Manufacturer Create(string name)
         {

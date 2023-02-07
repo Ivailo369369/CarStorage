@@ -63,7 +63,7 @@ namespace CarStorage.Infrastructure.Repositories.Queries
             int id,
             CancellationToken cancellationToken)
         {
-            var cars = await dbContext
+            var car = await dbContext
                 .Cars
                 .AsNoTracking()
                 .Include(c => c.Category)
@@ -71,7 +71,7 @@ namespace CarStorage.Infrastructure.Repositories.Queries
                 .Where(c => c.Id == id)
                 .FirstOrDefaultAsync(cancellationToken);
 
-            var result = mapper.Map<CarDto>(cars);
+            var result = mapper.Map<CarDto>(car);
 
             return result;
         }

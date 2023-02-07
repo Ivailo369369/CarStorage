@@ -25,21 +25,21 @@ namespace CarStorage.Core.Domain.CarStorage.Entities
             ManufacturerId = manufacturerId;
         }
 
-        public int Id { get; set; }
+        public int Id { get; private set; }
 
-        public string Model { get; set; }
+        public string Model { get; private set; }
 
-        public string ImageUrl { get; set; }
+        public string ImageUrl { get; private set; }
 
-        public int ManufacturerId { get; set; }
+        public int ManufacturerId { get; private set; }
 
-        public int CategoryId { get; set; }
+        public int CategoryId { get; private set; }
 
-        public string Description { get; set; }
+        public string Description { get; private set; }
 
-        public Manufacturer Manufacturer { get; set; }
+        public Manufacturer Manufacturer { get; private set; }
 
-        public Category Category { get; set; }
+        public Category Category { get; private set; }
 
         public static Car Create(
             string model,
@@ -66,6 +66,8 @@ namespace CarStorage.Core.Domain.CarStorage.Entities
                 {
                     throw new ArgumentException("The model exceeds the allowed length.");
                 }
+
+                Model = model;
             }
 
             return this;

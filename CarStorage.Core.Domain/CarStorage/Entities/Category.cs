@@ -12,13 +12,13 @@ namespace CarStorage.Core.Domain.CarStorage.Entities
             Description = description;
         }
 
-        public int Id { get; set; }
+        public int Id { get; private set; }
 
-        public string Name { get; set; }
+        public string Name { get; private set; }
 
-        public string Description { get; set; }
+        public string Description { get; private set; }
 
-        public ICollection<Car> Cars { get; set; }
+        public ICollection<Car> Cars { get; private set; }
 
         private static Category Create(string name, string description)
         {
